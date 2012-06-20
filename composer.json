@@ -1,0 +1,30 @@
+{
+    "name":        "alexeyshockov/clock",
+    "type":        "library",
+    "description": "Date & time manupulation library for PHP",
+    "keywords":    ["date", "time"],
+    "homepage":    "http://github.com/alexeyshockov/clock",
+    "type":        "library",
+    "license":     "MIT",
+    "support":     {
+        "issues": "https://github.com/alexeyshockov/clock/issues"
+    },
+
+    "authors": [
+        {
+            "name":     "Alexey Shockov",
+            "email":    "alexey@shockov.com",
+            "homepage": "http://alexey.shockov.com/"
+        }
+    ],
+
+    "require": {
+        "php": ">=5.3.2"
+    },
+
+    "autoload": {
+        "psr-0": {
+            "Clock": "src/"
+        }
+    }
+}
