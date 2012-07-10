@@ -21,6 +21,11 @@ class DateTime extends \DateTime
         parent::__construct($dt);
     }
 
+    public static function forToday()
+    {
+        return static::forDate(date('Y'), date('m'), date('d'));
+    }
+
     public static function forDate($year, $month, $day)
     {
         $dt = new \DateTime();
@@ -44,7 +49,7 @@ class DateTime extends \DateTime
      *
      * @return \Clock\Interval
      */
-    public function diff(\DateTime $dt, $absolute = false)
+    public function diff($dt, $absolute = null)
     {
         return new Interval(
             $this->diff($dt, $absolute)
@@ -68,7 +73,7 @@ class DateTime extends \DateTime
      *
      * @return \Clock\DateTime
      */
-    public function setTime($hour, $minute, $second)
+    public function setTime($hour, $minute, $second = null)
     {
         $dt = clone $this;
 
