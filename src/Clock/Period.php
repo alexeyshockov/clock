@@ -113,7 +113,7 @@ class Period extends \DatePeriod
         // Дата окончания включается исключительно, нужно сделать дополнительный день, чтобы получить её в периоде.
         $endDate   = \DateTime::createFromFormat('Y-m-d H:i:s', $month->format('Y-m-t 00:00:00'))->modify('+1 day');
 
-        return new static($startDate, new \DateInterval('P1D'), $endDate);
+        return new static($startDate, new \DateInterval('P1M'), $endDate);
     }
 
     /**
@@ -133,6 +133,6 @@ class Period extends \DatePeriod
         // Дата окончания включается исключительно, нужно сделать дополнительный день, чтобы получить её в периоде.
         $endDate   = $endDate->modify('+6 days')->modify('+1 day');
 
-        return new static($startDate, new \DateInterval('P1D'), $endDate);
+        return new static($startDate, new \DateInterval('P1W'), $endDate);
     }
 }
