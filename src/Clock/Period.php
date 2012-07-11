@@ -27,6 +27,8 @@ class Period extends \DatePeriod
         if (!$this->start) {
             foreach ($this as $start) {
                 $this->start = new \Clock\DateTime($start);
+
+                break;
             }
         }
 
