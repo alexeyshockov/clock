@@ -34,13 +34,13 @@ class Interval extends \DateInterval
     private function interval2iso(\DateInterval $di)
     {
         return 'P'.
-            $this->y.'Y'.
-            $this->m.'M'.
-            $this->d.'D'.
+            $di->format('%y').'Y'.
+            $di->format('%m').'M'.
+            $di->format('%d').'D'.
             'T'.
-            $this->h.'H'.
-            $this->i.'M'.
-            $this->s.'S';
+            $di->format('%h').'H'.
+            $di->format('%i').'M'.
+            $di->format('%s').'S';
     }
 
     /**
@@ -52,6 +52,7 @@ class Interval extends \DateInterval
             ($this->m * 30 * 24 * 60 * 60) +
             ($this->d * 24 * 60 * 60) +
             ($this->h * 60 * 60) +
+            ($this->i * 60) +
             $this->s;
     }
 }
