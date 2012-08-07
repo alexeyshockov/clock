@@ -41,7 +41,7 @@ class Period extends \DatePeriod
             $this->interval = $this->getIntervalFromString($args[0]);
         }
 
-        call_user_func(array('parent', '__construct'), func_get_args());
+        call_user_func_array(array('parent', '__construct'), func_get_args());
     }
 
     /**
