@@ -15,7 +15,7 @@ class Interval extends \DateInterval
     public function __construct($spec)
     {
         if ($spec instanceof \DateInterval) {
-            $spec = $this->interval2iso($spec);
+            $spec = $this->format2iso($spec);
         }
 
         parent::__construct($spec);
@@ -28,10 +28,10 @@ class Interval extends \DateInterval
      */
     public function __toString()
     {
-        return $this->interval2iso($this);
+        return $this->format2iso($this);
     }
 
-    private function interval2iso(\DateInterval $di)
+    private function format2iso(\DateInterval $di)
     {
         return 'P'.
             $di->format('%y').'Y'.
