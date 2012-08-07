@@ -7,7 +7,7 @@ namespace Clock;
  *
  * @see http://www.date4j.net/javadoc/index.html
  */
-class DateTime extends \DateTime
+class DateTime extends \DateTime implements \JsonSerializable
 {
     /**
      * @param string|\DateTime $dt
@@ -41,6 +41,14 @@ class DateTime extends \DateTime
         $dt->setTimestamp($timestamp);
 
         return new static($dt);
+    }
+
+    /**
+     * @return array
+     */
+    public function jsonSerialize()
+    {
+        return $this->format(static::ISO8601);
     }
 
     /**
