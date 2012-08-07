@@ -10,16 +10,65 @@ namespace Clock;
 class Period extends \DatePeriod
 {
     /**
-     * @var \DateTime
+     * @var \Clock\DateTime
      */
     private $start;
 
     /**
-     * @var \DateTime
+     * @var \Clock\DateTime
      */
     private $end;
 
     /**
+     * @var \Clock\Interval
+     */
+    private $interval;
+
+    /**
+     * Params are equal to original constructor.
+     *
+     * @throws \InvalidArgumentException
+     */
+    public function __construct()
+    {
+        $args = func_get_args();
+
+        if (in_array(func_num_args(), array(3, 4))) {
+            $this->interval = new Interval($args[1]);
+        }
+
+        if (in_array(func_num_args(), array(1, 2))) {
+            $this->interval = $this->getIntervalFromString($args[0]);
+        }
+
+        call_user_func(array('parent', '__construct'), func_get_args());
+    }
+
+    /**
+     * @todo Examples.
+     *
+     * Determines interval from ISO formatted string period string.
+     *
+     * @param string $string
+     *
+     * @return \DateInterval
+     */
+    private function getIntervalFromString($string)
+    {
+        $parts = explode('/', $string);
+
+        foreach ($parts as $part) {
+            if (0 === strpos($part, 'P')) {
+                return new Interval($part);
+            }
+        }
+
+        throw new \InvalidArgumentException('Unable to get interval from string.');
+    }
+
+    /**
+     * @todo Determine from constructor.
+     *
      * @return \Clock\DateTime
      */
     public function getStart()
@@ -36,6 +85,8 @@ class Period extends \DatePeriod
     }
 
     /**
+     * @todo Determine from constructor.
+     *
      * @return \Clock\DateTime
      */
     public function getEnd()
@@ -57,7 +108,7 @@ class Period extends \DatePeriod
      */
     public function getInterval()
     {
-        // FIXME Implement.
+        return $this->interval;
     }
 
     /**
@@ -92,6 +143,10 @@ class Period extends \DatePeriod
 
     /**
      * ISO period string.
+     *
+     * Examples:
+     *  * ...
+     *  * ...
      *
      * @return string
      */
@@ -132,7 +187,7 @@ class Period extends \DatePeriod
 
         $startDate = \DateTime::createFromFormat('Y-m-d H:i:s', $monday->format('Y-m-d 00:00:00'));
         $endDate   = clone $startDate;
-        // Дата окончания включается исключительно, нужно сделать дополнительный день, чтобы получить её в периоде.
+        // We must add one more day to include end date in period.
         $endDate   = $endDate->modify('+6 days')->modify('+1 day');
 
         return new static($startDate, new \DateInterval('P1D'), $endDate);
