@@ -37,6 +37,6 @@ class PeriodTest extends \PHPUnit_Framework_TestCase
     {
         $dp = new \Clock\Period('R5/2008-03-01T13:00:00Z/P1Y2M10DT2H30M');
 
-        assertSame('2008-03-01T13:00:00Z/P1Y2M10DT2H30M/2014-02-22T01:30:00Z', $dp->__toString());
+        assertSame('2008-03-01T13:00:00Z/P1Y2M10DT2H30M0S/2014-02-22T01:30:00Z', $dp->__toString());
     }
 }

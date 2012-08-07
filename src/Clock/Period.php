@@ -142,17 +142,20 @@ class Period extends \DatePeriod
     }
 
     /**
-     * ISO period string.
+     * @todo Examples.
      *
-     * Examples:
-     *  * ...
-     *  * ...
+     * ISO period string.
      *
      * @return string
      */
     public function __toString()
     {
-        // FIXME Implement.
+        $string = $this->getStart()->__toString().'/'
+            .$this->getInterval()->__toString().'/'
+            .$this->getEnd()->__toString();
+
+        // TODO Replace this shit...
+        return str_replace('+00:00', 'Z', $string);
     }
 
     /**
