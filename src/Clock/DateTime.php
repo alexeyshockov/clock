@@ -9,16 +9,60 @@ namespace Clock;
  */
 class DateTime extends \DateTime implements \JsonSerializable
 {
+    private function normalizeDateTimeString($string)
+    {
+        // Clear milliseconds.
+        $string = preg_replace('#\.\d{1,}#', '', $string);
+        $string = str_replace('Z', '+00:00', $string);
+
+        return $string;
+    }
+
     /**
+     * ISO 8601 supported. Complete date plus hours, minutes and seconds:
+     * <code>
+     * YYYY-MM-DDThh:mm:ssTZD (eg. 1997-07-16T19:20:30+01:00)
+     * </code>
+     *
+     * Where:
+     * <code>
+     * YYYY = four-digit year
+     * MM   = two-digit month (01 = January, etc.)
+     * DD   = two-digit day of month (01 through 31)
+     * hh   = two digits of hour (00 through 23) (am/pm not allowed)
+     * mm   = two digits of minute (00 through 59)
+     * ss   = two digits of second (00 through 59)
+     * TZD  = time zone designator (Z or +hh:mm or -hh:mm)
+     * </code>
+     *
+     * PHP not support milliseconds. If your string include it, they will be ignored (actually for JavaScript's
+     * Date.toISOString() users).
+     *
+     *
+     * @see http://www.w3.org/TR/NOTE-datetime
+     * @see \Clock\DateTime::toIsoString()
+     *
+     * @throws \InvalidArgumentException When date and time format is wrong.
+     *
      * @param string|\DateTime $dt
+     * @param \DateTimeZone    $tz
      */
-    public function __construct($dt)
+    public function __construct($dt, \DateTimeZone $tz = null)
     {
         if ($dt instanceof \DateTime) {
+            $tz = $dt->getTimezone();
             $dt = $dt->format(static::ATOM);
+        } elseif (is_scalar($dt)) {
+            $dt = $this->normalizeDateTimeString($dt);
+        } else {
+            throw new \InvalidArgumentException('Wrong argument type.');
         }
 
-        parent::__construct($dt);
+        try {
+            parent::__construct($dt, $tz);
+        } catch (\Exception $exception) {
+            throw new \InvalidArgumentException('Wrong date and time format.', 0, $exception);
+        }
     }
 
     public static function forToday()
@@ -48,7 +92,7 @@ class DateTime extends \DateTime implements \JsonSerializable
      */
     public function jsonSerialize()
     {
-        return $this->format(static::ISO8601);
+        return $this->toIsoString();
     }
 
     /**
@@ -65,6 +109,30 @@ class DateTime extends \DateTime implements \JsonSerializable
     }
 
     /**
+     * Complete date plus hours, minutes and seconds in UTC timezone:
+     * <code>
+     * 1997-07-16T19:20:30Z
+     * </code>
+     *
+     * P.S. PHP not support milliseconds.
+     *
+     * @see \Clock\DateTime::fromIsoString()
+     *
+     * @return string
+     */
+    public function toIsoString()
+    {
+        $utcDateTime = $this->setTimezone(new \DateTimeZone('UTC'));
+
+        return str_replace('+00:00', 'Z', $utcDateTime->format(static::ATOM));
+    }
+
+    private function callOriginal($method, $arguments)
+    {
+        return call_user_func_array(array('parent', $method), $arguments);
+    }
+
+    /**
      * Breaks BC for original \DateTime. Immutable.
      *
      * @return \Clock\DateTime
@@ -73,7 +141,23 @@ class DateTime extends \DateTime implements \JsonSerializable
     {
         $dt = clone $this;
 
-        return $dt->modify($modifier);
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
+    }
+
+    /**
+     * @param \DateTimeZone $tz
+     *
+     * @return \Clock\DateTime
+     */
+    public function setTimezone($tz)
+    {
+        $dt = clone $this;
+
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
     }
 
     /**
@@ -85,7 +169,9 @@ class DateTime extends \DateTime implements \JsonSerializable
     {
         $dt = clone $this;
 
-        return $dt->setTime($hour, $minute, $second);
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
     }
 
     /**
@@ -97,7 +183,9 @@ class DateTime extends \DateTime implements \JsonSerializable
     {
         $dt = clone $this;
 
-        return $dt->setDate($year, $month, $day);
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
     }
 
     /**
@@ -109,7 +197,9 @@ class DateTime extends \DateTime implements \JsonSerializable
     {
         $dt = clone $this;
 
-        return $dt->setISODate($year, $week, $day);
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
     }
 
     /**
@@ -121,7 +211,9 @@ class DateTime extends \DateTime implements \JsonSerializable
     {
         $dt = clone $this;
 
-        return $dt->setTimestamp($timestamp);
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
     }
 
     public function isEqualTo($dt)
@@ -194,6 +286,6 @@ class DateTime extends \DateTime implements \JsonSerializable
 
     public function __toString()
     {
-        return $this->format(static::ATOM);
+        return $this->toIsoString();
     }
 }
