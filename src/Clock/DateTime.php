@@ -44,10 +44,10 @@ class DateTime extends \DateTime implements \JsonSerializable
      *
      * @throws \InvalidArgumentException When date and time format is wrong.
      *
-     * @param string|\DateTime $dt
-     * @param \DateTimeZone    $tz
+     * @param null|string|\DateTime $dt
+     * @param null|\DateTimeZone    $tz
      */
-    public function __construct($dt, \DateTimeZone $tz = null)
+    public function __construct($dt = null, \DateTimeZone $tz = null)
     {
         if ($dt instanceof \DateTime) {
             $tz = $dt->getTimezone();
