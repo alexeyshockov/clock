@@ -49,13 +49,15 @@ class DateTime extends \DateTime implements \JsonSerializable
      */
     public function __construct($dt = null, \DateTimeZone $tz = null)
     {
-        if ($dt instanceof \DateTime) {
-            $tz = $dt->getTimezone();
-            $dt = $dt->format(static::ATOM);
-        } elseif (is_scalar($dt)) {
-            $dt = $this->normalizeDateTimeString($dt);
-        } else {
-            throw new \InvalidArgumentException('Wrong argument type.');
+        if (!is_null($dt)) {
+            if ($dt instanceof \DateTime) {
+                $tz = $dt->getTimezone();
+                $dt = $dt->format(static::ATOM);
+            } elseif (is_scalar($dt)) {
+                $dt = $this->normalizeDateTimeString($dt);
+            } else {
+                throw new \InvalidArgumentException('Wrong argument type.');
+            }
         }
 
         try {
