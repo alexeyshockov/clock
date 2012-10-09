@@ -90,11 +90,39 @@ class DateTime extends \DateTime implements \JsonSerializable
     }
 
     /**
-     * @return array
+     * @return string
      */
     public function jsonSerialize()
     {
         return $this->toIsoString();
+    }
+
+    /**
+     * Breaks BC for original \DateTime. Immutable.
+     *
+     * @return \Clock\DateTime
+     */
+    public function add(\DateInterval $interval)
+    {
+        $dt = clone $this;
+
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
+    }
+
+    /**
+     * Breaks BC for original \DateTime. Immutable.
+     *
+     * @return \Clock\DateTime
+     */
+    public function sub(\DateInterval $interval)
+    {
+        $dt = clone $this;
+
+        $dt->callOriginal(__FUNCTION__, func_get_args());
+
+        return $dt;
     }
 
     /**
