@@ -26,6 +26,9 @@
         "psr-0": {
             "Clock": "src/",
             "JsonSerializable": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     }
 }
