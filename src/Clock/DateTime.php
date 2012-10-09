@@ -100,9 +100,11 @@ class DateTime extends \DateTime implements \JsonSerializable
     /**
      * Breaks BC for original \DateTime. Immutable.
      *
+     * @param \DateInterval $interval
+     *
      * @return \Clock\DateTime
      */
-    public function add(\DateInterval $interval)
+    public function add($interval)
     {
         $dt = clone $this;
 
@@ -114,9 +116,11 @@ class DateTime extends \DateTime implements \JsonSerializable
     /**
      * Breaks BC for original \DateTime. Immutable.
      *
+     * @param \DateInterval $interval
+     *
      * @return \Clock\DateTime
      */
-    public function sub(\DateInterval $interval)
+    public function sub($interval)
     {
         $dt = clone $this;
 
