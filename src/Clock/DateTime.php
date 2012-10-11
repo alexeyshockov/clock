@@ -53,8 +53,11 @@ class DateTime extends \DateTime implements \JsonSerializable
             if ($dt instanceof \DateTime) {
                 $tz = $dt->getTimezone();
                 $dt = $dt->format(static::ATOM);
-            } elseif (is_scalar($dt)) {
+            } elseif (is_string($dt)) {
                 $dt = $this->normalizeDateTimeString($dt);
+            } elseif (is_int($dt)) {
+                // Timestamp.
+                $dt = '@'.$dt;
             } else {
                 throw new \InvalidArgumentException('Wrong argument type.');
             }
