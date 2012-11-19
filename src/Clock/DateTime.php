@@ -141,7 +141,7 @@ class DateTime extends \DateTime implements \JsonSerializable
     public function diff($dt, $absolute = null)
     {
         return new Interval(
-            $this->diff($dt, $absolute)
+            parent::diff($dt, $absolute)
         );
     }
 
