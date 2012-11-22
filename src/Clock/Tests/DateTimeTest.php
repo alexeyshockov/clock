@@ -43,4 +43,14 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         assertSame(1325405532, $dt->getTimestamp());
         assertSame(1325361600, $modifiedDt->getTimestamp());
     }
+
+    /**
+     * @test
+     */
+    public function toIsoStringShouldBeWithMillisconds()
+    {
+        $dt = new \Clock\DateTime('2012-08-16T09:38:14.451Z');
+
+        assertSame('2012-08-16T09:38:14.451Z', $dt->toIsoString(true));
+    }
 }
