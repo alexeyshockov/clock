@@ -9,10 +9,19 @@ namespace Clock;
  */
 class DateTime extends \DateTime implements \JsonSerializable
 {
+    private $millisecond = 0;
+
     private function normalizeDateTimeString($string)
     {
-        // Clear milliseconds.
-        $string = preg_replace('#\.\d{1,}#', '', $string);
+        // Milliseconds.
+        $pattern = '#\.(\d{1,})#';
+        preg_match($pattern, $string, $matches);
+        if ($matches) {
+            // Clear milliseconds.
+            $this->setMillisecond($matches[1]);
+            $string = preg_replace('#\.\d{1,}#', '', $string);
+        }
+
         $string = str_replace('Z', '+00:00', $string);
 
         return $string;
@@ -35,9 +44,6 @@ class DateTime extends \DateTime implements \JsonSerializable
      * TZD  = time zone designator (Z or +hh:mm or -hh:mm)
      * </code>
      *
-     * PHP not support milliseconds. If your string include it, they will be ignored (actually for JavaScript's
-     * Date.toISOString() users).
-     *
      *
      * @see http://www.w3.org/TR/NOTE-datetime
      * @see \Clock\DateTime::toIsoString()
@@ -58,6 +64,9 @@ class DateTime extends \DateTime implements \JsonSerializable
             } elseif (is_int($dt)) {
                 // Timestamp.
                 $dt = '@'.$dt;
+            } elseif (is_float($dt)) {
+                $this->setMillisecond($this->getMillisecondsFromTimestamp($dt));
+                $dt = '@'.floor($dt);
             } else {
                 throw new \InvalidArgumentException('Wrong argument type.');
             }
@@ -65,9 +74,22 @@ class DateTime extends \DateTime implements \JsonSerializable
 
         try {
             parent::__construct($dt, $tz);
+            if (is_null($dt)) {
+                $this->setMillisecond($this->getMillisecondsFromTimestamp(microtime(true)));
+            }
         } catch (\Exception $exception) {
             throw new \InvalidArgumentException('Wrong date and time format.', 0, $exception);
         }
+    }
+
+    private function getMillisecondsFromTimestamp($timestamp)
+    {
+        $milliseconds = 0;
+        if (is_float($timestamp)) {
+            $milliseconds = floor(($timestamp - floor($timestamp)) * 1000);
+        }
+
+        return $milliseconds;
     }
 
     public static function forToday()
@@ -146,22 +168,24 @@ class DateTime extends \DateTime implements \JsonSerializable
     }
 
     /**
-     * Complete date plus hours, minutes and seconds in UTC timezone:
+     * Complete date plus hours, minutes, seconds and milliseconds in UTC timezone:
      * <code>
      * 1997-07-16T19:20:30Z
      * </code>
-     *
-     * P.S. PHP not support milliseconds.
      *
      * @see \Clock\DateTime::fromIsoString()
      *
      * @return string
      */
-    public function toIsoString()
+    public function toIsoString($withMilliseconds = false)
     {
         $utcDateTime = $this->setTimezone(new \DateTimeZone('UTC'));
+        $formattedTime = str_replace('+00:00', 'Z', $utcDateTime->format(static::ATOM));
+        if ($withMilliseconds) {
+            $formattedTime = str_replace('Z', '.'.$this->getMillisecond().'Z', $formattedTime);
+        }
 
-        return str_replace('+00:00', 'Z', $utcDateTime->format(static::ATOM));
+        return $formattedTime;
     }
 
     private function callOriginal($method, $arguments)
@@ -253,6 +277,11 @@ class DateTime extends \DateTime implements \JsonSerializable
         return $dt;
     }
 
+    public function setMillisecond($millisecond)
+    {
+        $this->millisecond = $millisecond;
+    }
+
     public function isEqualTo($dt)
     {
         if ($dt instanceof \DateTime) {
@@ -319,6 +348,11 @@ class DateTime extends \DateTime implements \JsonSerializable
     public function getSecond()
     {
         return $this->format('s');
+    }
+
+    public function getMillisecond()
+    {
+        return $this->millisecond;
     }
 
     public function __toString()
