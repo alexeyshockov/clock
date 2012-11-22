@@ -23,12 +23,13 @@ class DateTimeTest extends \PHPUnit_Framework_TestCase
         $dt4 = new \Clock\DateTime('2012-08-16T09:38:14.451Z');
         // ISO8601 without some parts. 00 will be assumed for it (default \DateTime behaviour).
         $dt5 = new \Clock\DateTime('2012-01-01T12:02');
+        $offset = date('Z') / 3600;
 
         assertSame('2012-01-01T08:12:12Z', $dt1->__toString());
         assertSame('2012-01-01T12:12:12Z', $dt2->__toString());
         assertSame('2012-01-01T10:12:12Z', $dt3->__toString());
         assertSame('2012-08-16T09:38:14Z', $dt4->__toString());
-        assertSame('2012-01-01T08:02:00Z', $dt5->__toString());
+        assertSame('2012-01-01T'.sprintf('%02d', 12 - $offset).':02:00Z', $dt5->__toString());
     }
 
     /**
