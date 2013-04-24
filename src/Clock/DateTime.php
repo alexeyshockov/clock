@@ -175,6 +175,8 @@ class DateTime extends \DateTime implements \JsonSerializable
      *
      * @see \Clock\DateTime::fromIsoString()
      *
+     * @param bool $withMilliseconds
+     *
      * @return string
      */
     public function toIsoString($withMilliseconds = false)
@@ -182,7 +184,8 @@ class DateTime extends \DateTime implements \JsonSerializable
         $utcDateTime = $this->setTimezone(new \DateTimeZone('UTC'));
         $formattedTime = str_replace('+00:00', 'Z', $utcDateTime->format(static::ATOM));
         if ($withMilliseconds) {
-            $formattedTime = str_replace('Z', '.'.$this->getMillisecond().'Z', $formattedTime);
+            $milliseconds = str_pad($this->getMillisecond(), 3, '0', STR_PAD_LEFT);
+            $formattedTime = str_replace('Z', '.'.$milliseconds.'Z', $formattedTime);
         }
 
         return $formattedTime;
