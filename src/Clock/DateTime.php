@@ -9,6 +9,9 @@ namespace Clock;
  */
 class DateTime extends \DateTime implements \JsonSerializable
 {
+    /**
+     * @var int
+     */
     private $millisecond = 0;
 
     private function normalizeDateTimeString($string)
@@ -92,11 +95,21 @@ class DateTime extends \DateTime implements \JsonSerializable
         return $milliseconds;
     }
 
+    /**
+     * @return \Clock\DateTime
+     */
     public static function forToday()
     {
         return static::forDate(date('Y'), date('m'), date('d'));
     }
 
+    /**
+     * @param int $year
+     * @param int $month
+     * @param int $day
+     *
+     * @return \Clock\DateTime
+     */
     public static function forDate($year, $month, $day)
     {
         $dt = new \DateTime();
@@ -106,6 +119,11 @@ class DateTime extends \DateTime implements \JsonSerializable
         return new static($dt);
     }
 
+    /**
+     * @param int $timestamp
+     *
+     * @return \Clock\DateTime
+     */
     public static function forTimestamp($timestamp)
     {
         $dt = new \DateTime();
@@ -156,7 +174,7 @@ class DateTime extends \DateTime implements \JsonSerializable
 
     /**
      * @param DateTime $dt
-     * @param bool $absolute
+     * @param bool     $absolute
      *
      * @return \Clock\Interval
      */
@@ -280,11 +298,19 @@ class DateTime extends \DateTime implements \JsonSerializable
         return $dt;
     }
 
+    /**
+     * @param int $millisecond
+     */
     public function setMillisecond($millisecond)
     {
         $this->millisecond = $millisecond;
     }
 
+    /**
+     * @param mixed $dt
+     *
+     * @return bool
+     */
     public function isEqualTo($dt)
     {
         if ($dt instanceof \DateTime) {
@@ -294,6 +320,13 @@ class DateTime extends \DateTime implements \JsonSerializable
         return false;
     }
 
+    /**
+     * @todo And what about milliseconds?
+     *
+     * @param \DateTime $dt
+     *
+     * @return int
+     */
     public function compareTo(\DateTime $dt)
     {
         if ($this == $dt) {
@@ -303,61 +336,97 @@ class DateTime extends \DateTime implements \JsonSerializable
         return ($this > $dt ? 1 : -1);
     }
 
+    /**
+     * @return bool
+     */
     public function isLeapYear()
     {
         return (bool) $this->format('L');
     }
 
+    /**
+     * @return bool
+     */
     public function isInTheFuture()
     {
         return (1 == $this->compareTo(new \DateTime()));
     }
 
+    /**
+     * @return int
+     */
     public function getYear()
     {
         return $this->format('Y');
     }
 
+    /**
+     * @return int
+     */
     public function getMonth()
     {
         return $this->format('m');
     }
 
+    /**
+     * @return int
+     */
     public function getDay()
     {
         return $this->format('d');
     }
 
+    /**
+     * @return int
+     */
     public function getDayOfYear()
     {
         return $this->format('z');
     }
 
+    /**
+     * @return int
+     */
     public function getDayOfWeek()
     {
         return $this->format('N');
     }
 
+    /**
+     * @return int
+     */
     public function getHour()
     {
         return $this->format('H');
     }
 
+    /**
+     * @return int
+     */
     public function getMinute()
     {
         return $this->format('i');
     }
 
+    /**
+     * @return int
+     */
     public function getSecond()
     {
         return $this->format('s');
     }
 
+    /**
+     * @return int
+     */
     public function getMillisecond()
     {
         return $this->millisecond;
     }
 
+    /**
+     * @return string
+     */
     public function __toString()
     {
         return $this->toIsoString();
