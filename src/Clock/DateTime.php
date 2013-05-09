@@ -288,7 +288,7 @@ class DateTime extends \DateTime implements \JsonSerializable
     public function isEqualTo($dt)
     {
         if ($dt instanceof \DateTime) {
-            return (bool) $this->compareTo($dt);
+            return !$this->compareTo($dt);
         }
 
         return false;
