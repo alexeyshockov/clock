@@ -128,7 +128,8 @@ class Period extends \DatePeriod
      */
     public function isPartOf(\DatePeriod $dp)
     {
-        // FIXME Implement.
+        // TODO Implement.
+        throw new \Exception('Not implemented yet.');
     }
 
     /**
@@ -138,7 +139,8 @@ class Period extends \DatePeriod
      */
     public function isIntersectedWith(\DatePeriod $dp)
     {
-        // FIXME Implement.
+        // TODO Implement.
+        throw new \Exception('Not implemented yet.');
     }
 
     /**
