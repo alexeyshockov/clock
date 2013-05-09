@@ -305,7 +305,7 @@ class DateTime extends \DateTime implements \JsonSerializable
 
     public function isLeapYear()
     {
-        // FIXME Implement.
+        return (bool) $this->format('L');
     }
 
     public function isInTheFuture()
